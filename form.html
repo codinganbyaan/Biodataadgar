@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Biodata Karyawan ADGAR</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 60%);
+            transform: rotate(30deg);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .form-section, .preview-section {
+            flex: 1;
+            min-width: 320px;
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: var(--secondary);
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .section-title i {
+            background: var(--secondary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        label i {
+            color: var(--primary);
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e6e6e6;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.2);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #3aa9d6;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 201, 240, 0.2);
+        }
+        
+        .btn-danger {
+            background: var(--accent);
+            color: white;
+            padding: 10px 18px;
+            font-size: 14px;
+        }
+        
+        .btn-danger:hover {
+            background: #e31274;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(247, 37, 133, 0.2);
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, var(--success) 0%, #3aa9d6 100%);
+            color: white;
+            width: 100%;
+            padding: 18px;
+            font-size: 18px;
+            margin-top: 30px;
+            border-radius: 10px;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(76, 201, 240, 0.3);
+        }
+        
+        #biodata-preview {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            min-height: 500px;
+            box-shadow: inset 0 0 0 1px #f0f0f0;
+            font-size: 14px;
+        }
+        
+        .preview-item {
+            margin-bottom: 15px;
+            display: flex;
+        }
+        
+        .preview-label {
+            font-weight: 600;
+            color: var(--secondary);
+            min-width: 180px;
+        }
+        
+        .experience-item, .education-item {
+            background: #f9fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+        
+        .exp-title, .edu-title {
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .exp-period, .edu-period {
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #777;
+            font-size: 0.9rem;
+            padding: 20px;
+        }
+        
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .preview-item {
+                flex-direction: column;
+            }
+            
+            .preview-label {
+                margin-bottom: 5px;
+            }
+        }
+        
+        /* Modern elements */
+        .progress-bar {
+            height: 6px;
+            background: #e6e6e6;
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            width: 75%;
+            border-radius: 3px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .badge-primary {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+        
+        .badge-success {
+            background: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+        }
+        
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 6px 20px rgba(247, 37, 133, 0.3);
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        
+        .floating-btn:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        .loading-text {
+            font-size: 18px;
+            color: var(--dark);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .row .form-group {
+            flex: 1;
+        }
+
+        .compact-view .preview-item {
+            margin-bottom: 10px;
+        }
+        
+        .compact-view .experience-item, 
+        .compact-view .education-item {
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Menyiapkan PDF...</div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-user-tie"></i>
+            </div>
+            <h1>Generator Biodata Karyawan ADGAR</h1>
+            <p class="subtitle">Buat biodata profesional dengan desain modern dan unduh sebagai PDF</p>
+        </header>
+        
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        
+        <div class="main-content">
+            <div class="form-section">
+                <h2 class="section-title">
+                    <i class="fas fa-edit"></i>
+                    <span>Formulir Biodata</span>
+                </h2>
+                
+                <div class="form-group">
+                    <label for="nama"><i class="fas fa-user"></i>Nama Lengkap</label>
+                    <input type="text" id="nama" placeholder="Masukkan nama lengkap">
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label for="tempat-lahir"><i class="fas fa-map-marker-alt"></i>Tempat Lahir</label>
+                        <input type="text" id="tempat-lahir" placeholder="Kota kelahiran">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tanggal-lahir"><i class="fas fa-birthday-cake"></i>Tanggal Lahir</label>
+                        <input type="date" id="tanggal-lahir">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="alamat"><i class="fas fa-home"></i>Alamat Lengkap</label>
+                    <textarea id="alamat" rows="3" placeholder="Masukkan alamat lengkap"></textarea>
+                </div>
+                
+                <h3 class="section-title">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Pengalaman Kerja</span>
+                </h3>
+                <div id="pengalaman-container">
+                    <div class="experience-form">
+                        <div class="form-group">
+                            <label><i class="fas fa-building"></i>Nama Perusahaan</label>
+                            <input type="text" class="perusahaan" placeholder="Nama perusahaan">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-user-tie"></i>Posisi</label>
+                            <input type="text" class="posisi" placeholder="Posisi/jabatan">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar"></i>Periode</label>
+                            <input type="text" class="periode" placeholder="Contoh: Jan 2018 - Mar 2020">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-tasks"></i>Uraian Tugas</label>
+                            <textarea class="tugas" rows="2" placeholder="Deskripsi tugas dan tanggung jawab"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="tambah-pengalaman">
+                    <i class="fas fa-plus"></i>Tambah Pengalaman
+                </button>
+                
+                <h3 class="section-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Pendidikan</span>
+                </h3>
+                <div id="pendidikan-container">
+                    <div class="education-form">
+                        <div class="form-group">
+                            <label><i class="fas fa-book"></i>Jenjang Pendidikan</label>
+                            <input type="text" class="jenjang" placeholder="Contoh: S1 Manajemen">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-university"></i>Nama Institusi</label>
+                            <input type="text" class="institusi" placeholder="Nama sekolah/universitas">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar-check"></i>Tahun Lulus</label>
+                            <input type="text" class="tahun-lulus" placeholder="Tahun lulus">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="tambah-pendidikan">
+                    <i class="fas fa-plus"></i>Tambah Pendidikan
+                </button>
+                
+                <div class="form-group">
+                    <label for="awal-bergabung"><i class="fas fa-calendar-day"></i>Awal Bergabung di ADGAR</label>
+                    <input type="date" id="awal-bergabung">
+                </div>
+                
+                <div class="form-group">
+                    <label for="posisi-adgar"><i class="fas fa-briefcase"></i>Posisi di ADGAR</label>
+                    <input type="text" id="posisi-adgar" placeholder="Posisi/jabatan di ADGAR">
+                </div>
+            </div>
+            
+            <div class="preview-section">
+                <h2 class="section-title">
+                    <i class="fas fa-eye"></i>
+                    <span>Pratinjau Biodata</span>
+                    <span class="badge badge-success">LIVE</span>
+                </h2>
+                <div id="biodata-preview">
+                    <p>Isi formulir di sebelah kiri untuk melihat pratinjau biodata Anda di sini.</p>
+                </div>
+                <button class="btn download-btn" id="download-pdf">
+                    <i class="fas fa-download"></i>Unduh sebagai PDF
+                </button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>&copy; 2023 Generator Biodata Karyawan ADGAR. Semua hak cipta dilindungi.</p>
+        </footer>
+    </div>
+
+    <div class="floating-btn" id="help-btn">
+        <i class="fas fa-question"></i>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const biodataPreview = document.getElementById('biodata-preview');
+            const downloadBtn = document.getElementById('download-pdf');
+            const helpBtn = document.getElementById('help-btn');
+            const loading = document.getElementById('loading');
+            
+            // Input elements
+            const inputNama = document.getElementById('nama');
+            const inputTempatLahir = document.getElementById('tempat-lahir');
+            const inputTglLahir = document.getElementById('tanggal-lahir');
+            const inputAlamat = document.getElementById('alamat');
+            const inputAwalBergabung = document.getElementById('awal-bergabung');
+            const inputPosisiAdgar = document.getElementById('posisi-adgar');
+            
+            // Add experience button
+            document.getElementById('tambah-pengalaman').addEventListener('click', function() {
+                const container = document.getElementById('pengalaman-container');
+                const newExperience = container.firstElementChild.cloneNode(true);
+                
+                // Clear input values
+                newExperience.querySelectorAll('input, textarea').forEach(input => {
+                    input.value = '';
+                });
+                
+                // Add remove button if not the first one
+                if (container.children.length > 0) {
+                    const removeBtn = document.createElement('button');
+                    removeBtn.innerHTML = '<i class="fas fa-trash"></i>Hapus';
+                    removeBtn.classList.add('btn', 'btn-danger');
+                    removeBtn.addEventListener('click', function() {
+                        container.removeChild(newExperience);
+                        updatePreview();
+                    });
+                    newExperience.appendChild(removeBtn);
+                }
+                
+                container.appendChild(newExperience);
+            });
+            
+            // Add education button
+            document.getElementById('tambah-pendidikan').addEventListener('click', function() {
+                const container = document.getElementById('pendidikan-container');
+                const newEducation = container.firstElementChild.cloneNode(true);
+                
+                // Clear input values
+                newEducation.querySelectorAll('input').forEach(input => {
+                    input.value = '';
+                });
+                
+                // Add remove button if not the first one
+                if (container.children.length > 0) {
+                    const removeBtn = document.createElement('button');
+                    removeBtn.innerHTML = '<i class="fas fa-trash"></i>Hapus';
+                    removeBtn.classList.add('btn', 'btn-danger');
+                    removeBtn.addEventListener('click', function() {
+                        container.removeChild(newEducation);
+                        updatePreview();
+                    });
+                    newEducation.appendChild(removeBtn);
+                }
+                
+                container.appendChild(newEducation);
+            });
+            
+            // Update preview when any input changes
+            document.querySelectorAll('input, textarea').forEach(input => {
+                input.addEventListener('input', updatePreview);
+            });
+            
+            // Help button
+            helpBtn.addEventListener('click', function() {
+                alert('Isi semua informasi yang diminta pada formulir di sebelah kiri. Pratinjau akan muncul secara otomatis di sebelah kanan. Setelah selesai, klik "Unduh sebagai PDF" untuk mengunduh biodata Anda.');
+            });
+            
+            // Function to update the preview
+            function updatePreview() {
+                // Format date for display
+                function formatDate(dateString) {
+                    if (!dateString) return '-';
+                    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+                    return new Date(dateString).toLocaleDateString('id-ID', options);
+                }
+                
+                // Generate HTML for preview
+                let previewHTML = `
+                    <div style="text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #f0f0f0;">
+                        <h2 style="color: var(--secondary); font-size: 24px; margin-bottom: 8px;">BIODATA KARYAWAN</h2>
+                        <h3 style="color: var(--primary); font-size: 18px; font-weight: 500;">PT. ADGAR INDONESIA</h3>
+                    </div>
+                    
+                    <div class="preview-item">
+                        <span class="preview-label"><i class="fas fa-user"></i> Nama Lengkap:</span> 
+                        <span>${inputNama.value || '-'}</span>
+                    </div>
+                    
+                    <div class="preview-item">
+                        <span class="preview-label"><i class="fas fa-map-marker-alt"></i> Tempat, Tanggal Lahir:</span> 
+                        <span>${inputTempatLahir.value || '-'}, ${formatDate(inputTglLahir.value)}</span>
+                    </div>
+                    
+                    <div class="preview-item">
+                        <span class="preview-label"><i class="fas fa-home"></i> Alamat:</span> 
+                        <span>${inputAlamat.value || '-'}</span>
+                    </div>
+                    
+                    <h3 style="margin-top: 20px; color: var(--secondary); padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; font-size: 16px;">
+                        <i class="fas fa-briefcase"></i> Pengalaman Kerja
+                    </h3>
+                `;
+                
+                // Add experiences
+                const experiences = document.querySelectorAll('.experience-form');
+                if (experiences.length > 0) {
+                    experiences.forEach(exp => {
+                        const perusahaan = exp.querySelector('.perusahaan').value;
+                        const posisi = exp.querySelector('.posisi').value;
+                        const periode = exp.querySelector('.periode').value;
+                        const tugas = exp.querySelector('.tugas').value;
+                        
+                        if (perusahaan || posisi || periode || tugas) {
+                            previewHTML += `
+                                <div class="experience-item">
+                                    <div class="exp-title">
+                                        <span style="font-size: 15px;">${perusahaan || 'Perusahaan'}</span>
+                                        <span class="exp-period">${periode || ''}</span>
+                                    </div>
+                                    <div style="font-size: 14px;"><strong>Posisi:</strong> ${posisi || '-'}</div>
+                                    <div style="font-size: 14px;"><strong>Uraian Tugas:</strong> ${tugas || '-'}</div>
+                                </div>
+                            `;
+                        }
+                    });
+                } else {
+                    previewHTML += `<p style="color: #777; font-style: italic; margin: 15px 0; font-size: 14px;">Tidak ada pengalaman kerja yang dimasukkan.</p>`;
+                }
+                
+                // Add education
+                previewHTML += `
+                    <h3 style="margin-top: 20px; color: var(--secondary); padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; font-size: 16px;">
+                        <i class="fas fa-graduation-cap"></i> Pendidikan
+                    </h3>
+                `;
+                
+                const educations = document.querySelectorAll('.education-form');
+                if (educations.length > 0) {
+                    educations.forEach(edu => {
+                        const jenjang = edu.querySelector('.jenjang').value;
+                        const institusi = edu.querySelector('.institusi').value;
+                        const tahunLulus = edu.querySelector('.tahun-lulus').value;
+                        
+                        if (jenjang || institusi || tahunLulus) {
+                            previewHTML += `
+                                <div class="education-item">
+                                    <div class="edu-title">
+                                        <span style="font-size: 15px;">${jenjang || 'Jenjang Pendidikan'}</span>
+                                        <span class="edu-period">${tahunLulus || ''}</span>
+                                    </div>
+                                    <div style="font-size: 14px;"><strong>Institusi:</strong> ${institusi || '-'}</div>
+                                </div>
+                            `;
+                        }
+                    });
+                } else {
+                    previewHTML += `<p style="color: #777; font-style: italic; margin: 15px 0; font-size: 14px;">Tidak ada pendidikan yang dimasukkan.</p>`;
+                }
+                
+                // Add ADGAR info
+                previewHTML += `
+                    <h3 style="margin-top: 20px; color: var(--secondary); padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; font-size: 16px;">
+                        <i class="fas fa-building"></i> Data Karyawan ADGAR
+                    </h3>
+                    <div class="preview-item">
+                        <span class="preview-label"><i class="fas fa-user-tie"></i> Posisi:</span> 
+                        <span>${inputPosisiAdgar.value || '-'}</span>
+                    </div>
+                    <div class="preview-item">
+                        <span class="preview-label"><i class="fas fa-calendar-day"></i> Awal Bergabung:</span> 
+                        <span>${formatDate(inputAwalBergabung.value)}</span>
+                    </div>
+                `;
+                
+                biodataPreview.innerHTML = previewHTML;
+            }
+            
+            // Download as PDF - FIXED VERSION (Single Page)
+            downloadBtn.addEventListener('click', function() {
+                // Show loading indicator
+                loading.style.display = 'flex';
+                
+                // Use setTimeout to allow the loading indicator to render
+                setTimeout(function() {
+                    const { jsPDF } = window.jspdf;
+                    
+                    // Create a special compact version for PDF
+                    const source = document.getElementById('biodata-preview');
+                    const clone = source.cloneNode(true);
+                    
+                    // Apply compact styling for PDF
+                    clone.classList.add('compact-view');
+                    clone.style.width = '700px';
+                    clone.style.padding = '25px';
+                    clone.style.fontSize = '12px';
+                    
+                    // Further reduce spacing for PDF
+                    const allItems = clone.querySelectorAll('.preview-item');
+                    allItems.forEach(item => {
+                        item.style.marginBottom = '8px';
+                    });
+                    
+                    const allCards = clone.querySelectorAll('.experience-item, .education-item');
+                    allCards.forEach(card => {
+                        card.style.padding = '10px';
+                        card.style.marginBottom = '10px';
+                    });
+                    
+                    document.body.appendChild(clone);
+                    
+                    // Set options for html2canvas
+                    const options = {
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: true,
+                        logging: false,
+                        backgroundColor: '#ffffff'
+                    };
+                    
+                    // Convert to canvas
+                    html2canvas(clone, options).then(canvas => {
+                        // Remove the clone
+                        document.body.removeChild(clone);
+                        
+                        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                        const pdf = new jsPDF('p', 'mm', 'a4');
+                        const imgWidth = 190; // Reduced width to fit margins
+                        const imgHeight = canvas.height * imgWidth / canvas.width;
+                        
+                        // Check if content fits on one page
+                        if (imgHeight > 250) {
+                            // Scale down to fit on one page
+                            const scaleFactor = 250 / imgHeight;
+                            const scaledWidth = imgWidth * scaleFactor;
+                            const scaledHeight = imgHeight * scaleFactor;
+                            
+                            pdf.addImage(imgData, 'JPEG', (210 - scaledWidth) / 2, 20, scaledWidth, scaledHeight);
+                        } else {
+                            // Center content on page
+                            pdf.addImage(imgData, 'JPEG', (210 - imgWidth) / 2, 20, imgWidth, imgHeight);
+                        }
+                        
+                        // Add header
+                        pdf.setFillColor(67, 97, 238);
+                        pdf.rect(0, 0, 210, 15, 'F');
+                        pdf.setFontSize(16);
+                        pdf.setTextColor(255, 255, 255);
+                        pdf.text('BIODATA KARYAWAN - PT. ADGAR INDONESIA', 105, 10, { align: 'center' });
+                        
+                        // Add footer
+                        const date = new Date().toLocaleDateString('id-ID');
+                        pdf.setFontSize(10);
+                        pdf.setTextColor(100, 100, 100);
+                        pdf.text(`Dibuat pada: ${date}`, 105, 285, { align: 'center' });
+                        
+                        // Save the PDF
+                        pdf.save('biodata_adgar.pdf');
+                        
+                        // Hide loading indicator
+                        loading.style.display = 'none';
+                    }).catch(error => {
+                        console.error('Error generating PDF:', error);
+                        alert('Terjadi kesalahan saat membuat PDF. Silakan coba lagi.');
+                        loading.style.display = 'none';
+                    });
+                }, 100);
+            });
+            
+            // Initial preview update
+            updatePreview();
+        });
+    </script>
+</body>
+</html>
